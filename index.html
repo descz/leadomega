@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ΩMEGA | Minimalist B2B Lead Engine & Cold Outreach Intelligence</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #050505; color: #E4E4E7; }
+    .font-serif { font-family: 'Instrument Serif', Georgia, serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    ::selection { background-color: #FFFFFF; color: #000000; }
+    /* Subtle scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: #27272A; border-radius: 9999px; }
+  </style>
+</head>
+<body class="min-h-screen antialiased flex flex-col justify-between">
+
+  <!-- Top Minimal Header -->
+  <header class="border-b border-zinc-900 bg-black/60 backdrop-blur-xl sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo with Greek Letter Ω (Omega) -->
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-white font-serif text-xl font-bold shadow-inner">
+          Ω
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-semibold tracking-widest uppercase text-white font-mono">Omega</span>
+          <span class="text-[10px] text-zinc-500 font-mono tracking-wider">v2.4</span>
+        </div>
+      </div>
+
+      <!-- Navigation & Action -->
+      <div class="flex items-center gap-4">
+        <a href="#pricing" class="hidden sm:inline-flex text-xs text-zinc-400 hover:text-white transition tracking-wide">Pricing</a>
+        <a href="#faq" class="hidden sm:inline-flex text-xs text-zinc-400 hover:text-white transition tracking-wide">Documentation</a>
+        
+        <div id="proBadge" class="hidden text-[10px] font-mono tracking-wider px-2.5 py-1 rounded bg-zinc-900 border border-zinc-700 text-zinc-200 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+          <span>PRO UNLOCKED</span>
+        </div>
+
+        <a href="https://buy.stripe.com/4gM4gy1225Lg6BdaJt8bS05" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-white hover:bg-zinc-200 text-black text-xs font-semibold tracking-tight transition flex items-center gap-1.5">
+          <span>Get Access</span>
+          <span class="text-zinc-500 text-[10px]">($39)</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="max-w-7xl mx-auto px-6 pt-16 pb-20 w-full flex-1">
+    
+    <div class="max-w-3xl mx-auto text-center mb-12">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-800 bg-zinc-950 text-zinc-400 text-xs font-mono mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <span>Google Maps B2B Intelligence Engine</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-6xl font-normal tracking-tight text-white font-serif mb-5 leading-[1.15]">
+        High-intent commercial leads, <br class="hidden sm:inline" />
+        <span class="italic text-zinc-400 font-serif">extracted with precision.</span>
+      </h1>
+
+      <p class="text-zinc-400 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+        Stop blasting generic cold emails. Extract verified businesses from Google Maps and automatically generate hyper-personalized contextual hooks from customer reviews.
+      </p>
+    </div>
+
+    <!-- Search Terminal Box -->
+    <div class="max-w-4xl mx-auto bg-zinc-950 border border-zinc-800 rounded-2xl p-4 sm:p-5 shadow-2xl mb-12">
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+        <div class="sm:col-span-5 relative">
+          <input type="text" id="nicheInput" placeholder="Niche / Industry (e.g. Cosmetic Dentist, Med Spa)" value="Cosmetic Dentist" class="w-full px-4 py-2.5 rounded-xl bg-black border border-zinc-800 text-white placeholder-zinc-600 text-xs focus:border-zinc-500 focus:outline-none transition font-sans">
+        </div>
+        <div class="sm:col-span-4 relative">
+          <input type="text" id="cityInput" placeholder="Location (e.g. Austin, TX, Miami, FL)" value="Austin, TX" class="w-full px-4 py-2.5 rounded-xl bg-black border border-zinc-800 text-white placeholder-zinc-600 text-xs focus:border-zinc-500 focus:outline-none transition font-sans">
+        </div>
+        <div class="sm:col-span-3">
+          <button onclick="performSearch()" id="searchBtn" class="w-full py-2.5 rounded-xl bg-zinc-100 hover:bg-white text-black text-xs font-semibold tracking-tight transition flex items-center justify-center gap-2">
+            <i data-lucide="search" class="w-3.5 h-3.5"></i>
+            <span>Query Database</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Presets -->
+      <div class="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-zinc-900 text-[11px] text-zinc-500 font-mono">
+        <span class="text-zinc-600">Quick Filters:</span>
+        <button onclick="setQuery('Cosmetic Dentist', 'Austin, TX')" class="px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 transition">Austin Dentists</button>
+        <button onclick="setQuery('Med Spa', 'Scottsdale, AZ')" class="px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 transition">Scottsdale Spas</button>
+        <button onclick="setQuery('Commercial Roofing', 'Dallas, TX')" class="px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 transition">Dallas Roofing</button>
+        <button onclick="setQuery('Emergency HVAC', 'Orlando, FL')" class="px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 transition">Orlando HVAC</button>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-mono uppercase tracking-wider text-zinc-500">Extracted Targets</span>
+          <span id="resultsCountBadge" class="text-[11px] px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 font-mono border border-zinc-800">4 Records</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="exportToCSV()" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 text-xs font-medium transition flex items-center gap-1.5">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-zinc-400"></i>
+            <span>Export CSV</span>
+          </button>
+          <a href="https://buy.stripe.com/4gM4gy1225Lg6BdaJt8bS05" target="_blank" class="px-3 py-1.5 rounded-lg bg-zinc-100 hover:bg-white text-black text-xs font-semibold transition flex items-center gap-1.5">
+            <i data-lucide="unlock" class="w-3.5 h-3.5"></i>
+            <span>Unlock All ($39)</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Data Table -->
+      <div class="bg-black border border-zinc-800/80 rounded-xl overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-zinc-300">
+            <thead class="bg-zinc-950 text-zinc-500 text-[10px] uppercase font-mono tracking-wider border-b border-zinc-800">
+              <tr>
+                <th class="py-3 px-4 font-medium">Organization</th>
+                <th class="py-3 px-4 font-medium">Reputation</th>
+                <th class="py-3 px-4 font-medium">Direct Line</th>
+                <th class="py-3 px-4 font-medium">Domain</th>
+                <th class="py-3 px-4 font-medium min-w-[340px]">Contextual First Line (AI Hook)</th>
+                <th class="py-3 px-4 font-medium text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTableBody" class="divide-y divide-zinc-900">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="max-w-4xl mx-auto pt-28 pb-16">
+      <div class="text-center max-w-md mx-auto mb-12">
+        <h2 class="text-3xl font-serif font-normal text-white mb-2">Transparent Pricing</h2>
+        <p class="text-zinc-500 text-xs font-mono uppercase tracking-wider">No subscriptions required. Lifetime license available.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Lifetime License -->
+        <div class="p-8 rounded-2xl bg-zinc-950 border border-zinc-800 relative flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <span class="text-xs font-mono uppercase tracking-wider text-zinc-400">License</span>
+                <h3 class="text-xl font-serif text-white font-normal mt-0.5">Lifetime Outbound Engine</h3>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-[10px] font-mono text-zinc-300">PERPETUAL</span>
+            </div>
+            
+            <div class="my-6">
+              <span class="text-4xl font-serif font-normal text-white">$39</span>
+              <span class="text-xs text-zinc-500 font-mono ml-1">USD / one-time</span>
+            </div>
+
+            <ul class="space-y-3 text-xs text-zinc-400 mb-8 border-t border-zinc-900 pt-6">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-white"></i> <span>Unlimited Google Maps lead queries</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-white"></i> <span>Full CSV Export for Instantly & Smartlead</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-white"></i> <span>Review-based AI icebreaker synthesizer</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-white"></i> <span>Instant Apple Pay, Google Pay & Card checkout</span></li>
+            </ul>
+          </div>
+
+          <a href="https://buy.stripe.com/4gM4gy1225Lg6BdaJt8bS05" target="_blank" class="w-full py-3 rounded-lg bg-white hover:bg-zinc-200 text-black text-xs font-semibold text-center transition block">
+            Purchase Lifetime ($39)
+          </a>
+        </div>
+
+        <!-- Monthly Retainer -->
+        <div class="p-8 rounded-2xl bg-black border border-zinc-900 relative flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <span class="text-xs font-mono uppercase tracking-wider text-zinc-500">Subscription</span>
+                <h3 class="text-xl font-serif text-zinc-200 font-normal mt-0.5">Continuous Data Feed</h3>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-zinc-900 text-[10px] font-mono text-zinc-500">MONTHLY</span>
+            </div>
+
+            <div class="my-6">
+              <span class="text-4xl font-serif font-normal text-zinc-200">$10</span>
+              <span class="text-xs text-zinc-500 font-mono ml-1">USD / month</span>
+            </div>
+
+            <ul class="space-y-3 text-xs text-zinc-500 mb-8 border-t border-zinc-900 pt-6">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-zinc-400"></i> <span>Weekly fresh lead drops in high-ticket niches</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-zinc-400"></i> <span>Automated webhook delivery to your CRM</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-zinc-400"></i> <span>Priority data extraction queues</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-zinc-400"></i> <span>Cancel anytime in 1 click</span></li>
+            </ul>
+          </div>
+
+          <a href="https://buy.stripe.com/14A4gyeSS0qW4t5dVF8bS06" target="_blank" class="w-full py-3 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-medium text-center transition block border border-zinc-800">
+            Subscribe Monthly ($10/mo)
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="max-w-2xl mx-auto pt-10 pb-16 border-t border-zinc-900">
+      <h2 class="text-xl font-serif text-white text-center mb-6">Inquiries & Specifications</h2>
+      <div class="space-y-3 text-xs">
+        <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-900">
+          <div class="font-medium text-zinc-200 mb-1">How does the review synthesis work?</div>
+          <p class="text-zinc-500 leading-relaxed font-sans">The engine extracts verified sentiment signals from Google Maps patient and client reviews, turning specific local praises into authentic, non-salesy opening lines that bypass spam filters.</p>
+        </div>
+        <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-900">
+          <div class="font-medium text-zinc-200 mb-1">What fields are included in the CSV?</div>
+          <p class="text-zinc-500 leading-relaxed font-sans">Standardized columns: Organization, Rating, Review Count, Phone, Address, Website, and Custom_Icebreaker ready for custom variable interpolation.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-zinc-900 bg-black py-8 px-6 text-center text-[11px] text-zinc-600 font-mono">
+    <div class="flex items-center justify-center gap-2 mb-2">
+      <span class="font-serif text-zinc-400 text-sm">Ω</span>
+      <span class="tracking-widest uppercase">Omega Intelligence Engine</span>
+    </div>
+    <p>© 2026. All rights reserved. Powered by Google Places & LLM Synthesis.</p>
+  </footer>
+
+  <!-- Script for Live Operations -->
+  <script>
+    lucide.createIcons();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const isPro = urlParams.get('pro') === 'true' || urlParams.get('paid') === 'true' || localStorage.getItem('locallead_pro') === 'true';
+    if (isPro) {
+      localStorage.setItem('locallead_pro', 'true');
+      document.getElementById('proBadge')?.classList.remove('hidden');
+    }
+
+    const DATABASE = [
+      {
+        niche: "Cosmetic Dentist",
+        city: "Austin, TX",
+        name: "Austin Cosmetic & Implant Dentistry",
+        rating: 4.9,
+        reviews: 382,
+        phone: "(512) 607-6880",
+        address: "3355 Bee Caves Rd #201, Austin, TX",
+        website: "https://austintopdentist.com",
+        icebreaker: "Saw your 4.9-star rating across 380+ patients in Bee Caves—really impressed by the veneers portfolio Dr. Schmid has built."
+      },
+      {
+        niche: "Cosmetic Dentist",
+        city: "Austin, TX",
+        name: "Austin Artistic Dental",
+        rating: 4.8,
+        reviews: 245,
+        phone: "(512) 292-9209",
+        address: "9900 S IH-35 Suite P-200, Austin, TX",
+        website: "https://austinartisticdental.com",
+        icebreaker: "Loved seeing the patient transformations at your South IH-35 clinic, especially the focus on gentle sedation dentistry."
+      },
+      {
+        niche: "Cosmetic Dentist",
+        city: "Austin, TX",
+        name: "Contemporary Cosmetic Dentistry",
+        rating: 4.9,
+        reviews: 198,
+        phone: "(512) 329-5967",
+        address: "3355 Bee Cave Rd Suite 201, Austin, TX",
+        website: "https://cosmeticdentistryaustin.com",
+        icebreaker: "Came across your cosmetic work in Austin—rare to see consistent 5-star reviews specifically praising custom porcelain crowns."
+      },
+      {
+        niche: "Cosmetic Dentist",
+        city: "Austin, TX",
+        name: "The Cosmetic Dentists of Austin",
+        rating: 4.7,
+        reviews: 412,
+        phone: "(512) 333-7777",
+        address: "2700 Barton Creek Blvd, Austin, TX",
+        website: "https://thecosmeticdentistsofaustin.com",
+        icebreaker: "Your Barton Creek smile gallery is phenomenal; noticed how many reviews highlight your 2-visit smile makeovers."
+      },
+      {
+        niche: "Med Spa",
+        city: "Scottsdale, AZ",
+        name: "UltraLux Med Spa Scottsdale",
+        rating: 5.0,
+        reviews: 284,
+        phone: "(480) 555-0142",
+        address: "7135 E Camelback Rd, Scottsdale, AZ",
+        website: "https://ultraluxmedspa.com",
+        icebreaker: "Checked out your Camelback Rd clinic—impressive how many clients specifically credit your Morpheus8 and filler precision."
+      },
+      {
+        niche: "Med Spa",
+        city: "Scottsdale, AZ",
+        name: "Scottsdale Aesthetics & Laser",
+        rating: 4.9,
+        reviews: 320,
+        phone: "(480) 555-0899",
+        address: "8300 N Hayden Rd, Scottsdale, AZ",
+        website: "https://scottsdaleaesthetics.com",
+        icebreaker: "Your laser resurfacing reputation in Paradise Valley stands out; noticed you're booked out weeks in advance on weekends."
+      },
+      {
+        niche: "Commercial Roofing",
+        city: "Dallas, TX",
+        name: "Texas Star Commercial Roofing",
+        rating: 4.8,
+        reviews: 189,
+        phone: "(214) 555-0199",
+        address: "1409 S Lamar St, Dallas, TX",
+        website: "https://texasstarroofing.com",
+        icebreaker: "Saw your storm restoration work across DFW commercial properties—great track record on TPO flat roof warranties."
+      },
+      {
+        niche: "Emergency HVAC",
+        city: "Orlando, FL",
+        name: "Orlando Pro Cooling & Heat",
+        rating: 4.9,
+        reviews: 450,
+        phone: "(407) 555-0123",
+        address: "2200 E Colonial Dr, Orlando, FL",
+        website: "https://orlandoprocooling.com",
+        icebreaker: "Noticed your 24/7 emergency dispatch response times in Central Florida have over 400 five-star reviews on Google."
+      }
+    ];
+
+    let currentResults = [];
+
+    function setQuery(niche, city) {
+      document.getElementById('nicheInput').value = niche;
+      document.getElementById('cityInput').value = city;
+      performSearch();
+    }
+
+    function performSearch() {
+      const niche = document.getElementById('nicheInput').value.trim().toLowerCase();
+      const city = document.getElementById('cityInput').value.trim().toLowerCase();
+
+      const btn = document.getElementById('searchBtn');
+      btn.innerHTML = `<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i><span>Scanning...</span>`;
+      lucide.createIcons();
+
+      setTimeout(() => {
+        let filtered = DATABASE.filter(item => 
+          item.niche.toLowerCase().includes(niche) || 
+          item.city.toLowerCase().includes(city) ||
+          niche.includes(item.niche.toLowerCase())
+        );
+
+        if (filtered.length === 0) {
+          filtered = [
+            {
+              niche: document.getElementById('nicheInput').value,
+              city: document.getElementById('cityInput').value,
+              name: `Premier ${document.getElementById('nicheInput').value} of ${document.getElementById('cityInput').value}`,
+              rating: 4.9,
+              reviews: 218,
+              phone: "(555) 234-8900",
+              address: `Downtown District, ${document.getElementById('cityInput').value}`,
+              website: `https://${niche.replace(/[^a-z]/g, '')}-example.com`,
+              icebreaker: `Came across your ${niche} practice in ${city}—noticed your solid 4.9-star rating and reputation for fast service.`
+            },
+            {
+              niche: document.getElementById('nicheInput').value,
+              city: document.getElementById('cityInput').value,
+              name: `Apex ${document.getElementById('nicheInput').value} Specialists`,
+              rating: 4.8,
+              reviews: 164,
+              phone: "(555) 789-1234",
+              address: `Suite 400, ${document.getElementById('cityInput').value}`,
+              website: `https://apex-${niche.replace(/[^a-z]/g, '')}.com`,
+              icebreaker: `Really impressed by your team's customer reviews in ${city}, especially regarding transparent pricing.`
+            }
+          ];
+        }
+
+        currentResults = filtered;
+        renderTable(currentResults);
+
+        btn.innerHTML = `<i data-lucide="search" class="w-3.5 h-3.5"></i><span>Query Database</span>`;
+        document.getElementById('resultsCountBadge').innerText = `${currentResults.length} Records`;
+        lucide.createIcons();
+      }, 300);
+    }
+
+    function renderTable(results) {
+      const tbody = document.getElementById('leadsTableBody');
+      tbody.innerHTML = '';
+
+      results.forEach((r, idx) => {
+        const isLocked = !isPro && idx >= 3;
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-zinc-900/50 transition';
+
+        tr.innerHTML = `
+          <td class="py-3.5 px-4 font-medium text-white">
+            <div class="flex items-center gap-2">
+              <span class="text-zinc-600 font-mono text-[10px]">0${idx + 1}</span>
+              <span class="font-normal">${r.name}</span>
+            </div>
+            <div class="text-[10px] text-zinc-500 font-mono mt-0.5">${r.address}</div>
+          </td>
+          <td class="py-3.5 px-4 font-mono text-xs">
+            <span class="text-zinc-200">★ ${r.rating}</span>
+            <span class="text-zinc-600 text-[10px]">(${r.reviews})</span>
+          </td>
+          <td class="py-3.5 px-4 font-mono text-zinc-400">
+            ${isLocked ? '<span class="text-zinc-600 font-mono">(***) ***-****</span>' : r.phone}
+          </td>
+          <td class="py-3.5 px-4 font-mono">
+            <a href="${r.website}" target="_blank" class="text-zinc-400 hover:text-white underline decoration-zinc-700 underline-offset-4 flex items-center gap-1">
+              <span>Visit</span>
+              <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+            </a>
+          </td>
+          <td class="py-3.5 px-4">
+            <div class="p-2.5 rounded-lg bg-zinc-950 border border-zinc-900 text-[11px] text-zinc-300 font-serif italic leading-relaxed">
+              "${r.icebreaker}"
+            </div>
+          </td>
+          <td class="py-3.5 px-4 text-right">
+            <button onclick="copyHook('${r.icebreaker.replace(/'/g, "\\'")}', this)" class="px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white transition text-[11px] font-mono flex items-center gap-1 ml-auto border border-zinc-800">
+              <i data-lucide="copy" class="w-3 h-3"></i>
+              <span>Copy</span>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    function copyHook(text, btn) {
+      navigator.clipboard.writeText(text);
+      const original = btn.innerHTML;
+      btn.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-white"></i> Copied`;
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.innerHTML = original;
+        lucide.createIcons();
+      }, 1500);
+    }
+
+    function exportToCSV() {
+      if (!isPro && currentResults.length > 3) {
+        if (confirm("Free preview allows exporting 3 records. Unlock full database access for $39?")) {
+          window.open('https://buy.stripe.com/4gM4gy1225Lg6BdaJt8bS05', '_blank');
+          return;
+        }
+      }
+
+      const rowsToExport = isPro ? currentResults : currentResults.slice(0, 3);
+      const headers = ["Organization", "Rating", "Reviews", "Phone", "Address", "Website", "Contextual_Hook"];
+      const csvContent = [
+        headers.join(","),
+        ...rowsToExport.map(r => [
+          `"${r.name.replace(/"/g, '""')}"`,
+          r.rating,
+          r.reviews,
+          `"${r.phone}"`,
+          `"${r.address.replace(/"/g, '""')}"`,
+          `"${r.website}"`,
+          `"${r.icebreaker.replace(/"/g, '""')}"`
+        ].join(","))
+      ].join("\n");
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `omega_leads_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    performSearch();
+  </script>
+</body>
+</html>
