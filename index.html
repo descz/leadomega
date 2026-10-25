@@ -6,6 +6,7 @@
   <title>ΩMEGA | Minimalist B2B Lead Engine & Cold Outreach Intelligence</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23000000' stroke='%2327272A' stroke-width='4'/%3E%3Ctext x='50%25' y='68%25' font-size='60' font-family='Georgia, serif' font-weight='bold' fill='%23FFFFFF' text-anchor='middle'%3E%CE%A9%3C/text%3E%3C/svg%3E">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -122,18 +123,22 @@
           <span id="resultsCountBadge" class="text-[11px] px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 font-mono border border-zinc-800">Loading...</span>
         </div>
 
-        <div class="flex items-center gap-2">
-          <button onclick="downloadSampleCSV()" class="px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white text-xs font-medium transition flex items-center gap-1.5">
-            <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-zinc-400"></i>
-            <span>Sample CSV</span>
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="exportToExcel(true)" class="px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white text-xs font-medium transition flex items-center gap-1.5" title="Baixar amostra em Excel com padrão de cores e legenda">
+            <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>Amostra Excel (.xlsx)</span>
           </button>
-          <button onclick="exportToCSV()" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-200 text-xs font-medium transition flex items-center gap-1.5">
-            <i data-lucide="download" class="w-3.5 h-3.5 text-zinc-300"></i>
-            <span>Export CSV</span>
+          <button onclick="exportToExcel(false)" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-sm" title="Planilha completa formatada com cores por categoria, bordas e legenda">
+            <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-white"></i>
+            <span>Baixar Planilha Excel (.xlsx)</span>
+          </button>
+          <button onclick="exportToCSV()" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 text-xs font-medium transition flex items-center gap-1.5" title="Formato CSV puro para Instantly ou Smartlead">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-zinc-400"></i>
+            <span>CSV (Instantly)</span>
           </button>
           <a href="https://buy.stripe.com/4gM4gy1225Lg6BdaJt8bS05" target="_blank" class="px-3 py-1.5 rounded-lg bg-zinc-100 hover:bg-white text-black text-xs font-semibold transition flex items-center gap-1.5">
             <i data-lucide="unlock" class="w-3.5 h-3.5"></i>
-            <span>Unlock Unlimited ($39)</span>
+            <span>Acesso Total ($39)</span>
           </a>
         </div>
       </div>
@@ -1563,20 +1568,194 @@
       }, 1500);
     }
 
-    function downloadSampleCSV() {
-      const sample = [
-        ["Organization", "Rating", "Reviews", "Phone", "Address", "Website", "Contextual_Hook"],
-        ["Austin Cosmetic & Implant Dentistry", 4.9, 382, "(512) 607-6880", "3355 Bee Caves Rd #201, Austin, TX", "https://austintopdentist.com", "Saw your 4.9-star rating across 380+ patients in Bee Caves—really impressed by the veneers portfolio Dr. Schmid has built."],
-        ["UltraLux Med Spa Scottsdale", 5.0, 284, "(480) 555-0142", "7135 E Camelback Rd, Scottsdale, AZ", "https://ultraluxmedspa.com", "Checked out your Camelback Rd clinic—impressive how many clients credit your Morpheus8 precision."],
-        ["Texas Star Commercial Roofing", 4.8, 189, "(214) 555-0199", "1409 S Lamar St, Dallas, TX", "https://texasstarroofing.com", "Saw your storm restoration work across DFW—great track record on TPO flat roof warranties."]
+    async function exportToExcel(isSample = false) {
+      if (!isSample && !isPro && currentResults.length > 3) {
+        if (confirm("A prévia gratuita exporta 3 empresas. Deseja desbloquear a base completa de 100+ leads com garantia incondicional de 7 dias por $39 USD?")) {
+          window.open('https://buy.stripe.com/4gM4gy1225Lg6BdaJt8bS05', '_blank');
+          return;
+        }
+      }
+
+      const rowsToExport = isSample ? DATABASE.slice(0, 10) : (isPro ? currentResults : currentResults.slice(0, 3));
+
+      if (typeof ExcelJS === 'undefined') {
+        alert("Carregando o motor Excel, por favor aguarde 1 segundo e tente novamente.");
+        return;
+      }
+
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = 'Omega Lead Intelligence';
+      workbook.created = new Date();
+
+      const sheet = workbook.addWorksheet('Leads Qualificados', {
+        views: [{ showGridLines: true, state: 'frozen', ySplit: 5 }]
+      });
+
+      sheet.columns = [
+        { key: 'id', width: 8 },
+        { key: 'category', width: 25 },
+        { key: 'name', width: 35 },
+        { key: 'rating', width: 14 },
+        { key: 'reviews', width: 15 },
+        { key: 'phone', width: 18 },
+        { key: 'address', width: 38 },
+        { key: 'website', width: 28 },
+        { key: 'hook', width: 65 }
       ];
 
-      const csvContent = sample.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      // Banner Row 1
+      sheet.mergeCells('A1:I1');
+      const titleCell = sheet.getCell('A1');
+      titleCell.value = 'ΩMEGA | B2B LEAD ENGINE & COLD OUTREACH DATABASE';
+      titleCell.font = { name: 'Segoe UI', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
+      titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF09090B' } };
+      titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+      sheet.getRow(1).height = 38;
+
+      // Subtitle Row 2
+      sheet.mergeCells('A2:I2');
+      const subCell = sheet.getCell('A2');
+      subCell.value = 'LEGENDA DE CORES DAS CATEGORIAS & DADOS HIGIENIZADOS COM IA (TIER 1)';
+      subCell.font = { name: 'Segoe UI', size: 9, bold: true, color: { argb: 'FFA1A1AA' } };
+      subCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF18181B' } };
+      subCell.alignment = { vertical: 'middle', horizontal: 'center' };
+      sheet.getRow(2).height = 22;
+
+      // Visual Legend Row 3
+      const legendItems = [
+        { cell: 'A3', text: 'LEGENDA:', bg: 'FF27272A', color: 'FFFFFFFF' },
+        { cell: 'B3', text: 'Cosmetic Dentistry', bg: 'FF0284C7', color: 'FFFFFFFF' },
+        { cell: 'C3', text: 'Med Spa & Estética', bg: 'FFC026D3', color: 'FFFFFFFF' },
+        { cell: 'D3', text: 'Personal Injury Law', bg: 'FFD97706', color: 'FFFFFFFF' },
+        { cell: 'E3', text: 'Commercial Roofing', bg: 'FFDC2626', color: 'FFFFFFFF' },
+        { cell: 'F3', text: 'Emergency HVAC', bg: 'FF059669', color: 'FFFFFFFF' },
+        { cell: 'G3', text: 'Custom Home Builders', bg: 'FF7C3AED', color: 'FFFFFFFF' },
+        { cell: 'H3', text: '★ 4.8+ Top Rated', bg: 'FFFEF08A', color: 'FF854D0E' },
+        { cell: 'I3', text: 'Instantly / Smartlead Ready', bg: 'FFE2E8F0', color: 'FF334155' }
+      ];
+
+      legendItems.forEach(item => {
+        const c = sheet.getCell(item.cell);
+        c.value = item.text;
+        c.font = { name: 'Segoe UI', size: 9, bold: true, color: { argb: item.color } };
+        c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: item.bg } };
+        c.alignment = { vertical: 'middle', horizontal: 'center' };
+        c.border = {
+          top: { style: 'thin', color: { argb: 'FFD4D4D8' } },
+          left: { style: 'thin', color: { argb: 'FFD4D4D8' } },
+          bottom: { style: 'thin', color: { argb: 'FFD4D4D8' } },
+          right: { style: 'thin', color: { argb: 'FFD4D4D8' } }
+        };
+      });
+      sheet.getRow(3).height = 26;
+
+      sheet.getRow(4).height = 8; // Spacer
+
+      // Headers Row 5
+      const headers = [
+        '# ID',
+        'CATEGORIA',
+        'EMPRESA / ORGANIZAÇÃO',
+        'REPUTAÇÃO',
+        'AVALIAÇÕES',
+        'TELEFONE',
+        'ENDEREÇO COMPLETO',
+        'WEBSITE OFICIAL',
+        'GANCHO DE COLD EMAIL (AI REVIEW HOOK)'
+      ];
+
+      const headerRow = sheet.getRow(5);
+      headers.forEach((h, idx) => {
+        const cell = headerRow.getCell(idx + 1);
+        cell.value = h;
+        cell.font = { name: 'Segoe UI', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F172A' } };
+        cell.alignment = { vertical: 'middle', horizontal: idx === 0 || idx === 1 || idx === 3 || idx === 4 ? 'center' : 'left' };
+        cell.border = {
+          top: { style: 'medium', color: { argb: 'FF000000' } },
+          bottom: { style: 'medium', color: { argb: 'FF000000' } }
+        };
+      });
+      headerRow.height = 30;
+
+      const CATEGORY_COLORS = {
+        'Cosmetic Dentist': { bg: 'FF0284C7', text: 'FFFFFFFF' },
+        'Med Spa': { bg: 'FFC026D3', text: 'FFFFFFFF' },
+        'Personal Injury Lawyer': { bg: 'FFD97706', text: 'FFFFFFFF' },
+        'Commercial Roofing': { bg: 'FFDC2626', text: 'FFFFFFFF' },
+        'Emergency HVAC': { bg: 'FF059669', text: 'FFFFFFFF' },
+        'Custom Home Builder': { bg: 'FF7C3AED', text: 'FFFFFFFF' }
+      };
+
+      rowsToExport.forEach((r, i) => {
+        const row = sheet.getRow(6 + i);
+        const catStyle = CATEGORY_COLORS[r.niche] || { bg: 'FF4B5563', text: 'FFFFFFFF' };
+
+        // ID
+        row.getCell(1).value = String(i + 1).padStart(3, '0');
+        row.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
+        row.getCell(1).font = { name: 'Segoe UI', size: 9, color: { argb: 'FF64748B' } };
+
+        // Category Tag with Strong Color
+        row.getCell(2).value = r.niche;
+        row.getCell(2).alignment = { vertical: 'middle', horizontal: 'center' };
+        row.getCell(2).font = { name: 'Segoe UI', size: 9, bold: true, color: { argb: catStyle.text } };
+        row.getCell(2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: catStyle.bg } };
+
+        // Company
+        row.getCell(3).value = r.name;
+        row.getCell(3).alignment = { vertical: 'middle', horizontal: 'left' };
+        row.getCell(3).font = { name: 'Segoe UI', size: 10, bold: true, color: { argb: 'FF0F172A' } };
+
+        // Rating
+        row.getCell(4).value = `★ ${r.rating}`;
+        row.getCell(4).alignment = { vertical: 'middle', horizontal: 'center' };
+        row.getCell(4).font = { name: 'Segoe UI', size: 10, bold: true, color: { argb: 'FF854D0E' } };
+        row.getCell(4).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEFCE8' } };
+
+        // Reviews
+        row.getCell(5).value = `${r.reviews} reviews`;
+        row.getCell(5).alignment = { vertical: 'middle', horizontal: 'center' };
+        row.getCell(5).font = { name: 'Segoe UI', size: 9, color: { argb: 'FF475569' } };
+
+        // Phone
+        row.getCell(6).value = r.phone;
+        row.getCell(6).alignment = { vertical: 'middle', horizontal: 'center' };
+        row.getCell(6).font = { name: 'Consolas', size: 9, color: { argb: 'FF1E293B' } };
+
+        // Address
+        row.getCell(7).value = r.address;
+        row.getCell(7).alignment = { vertical: 'middle', horizontal: 'left' };
+        row.getCell(7).font = { name: 'Segoe UI', size: 9, color: { argb: 'FF334155' } };
+
+        // Website
+        row.getCell(8).value = { text: r.website, hyperlink: r.website };
+        row.getCell(8).alignment = { vertical: 'middle', horizontal: 'left' };
+        row.getCell(8).font = { name: 'Segoe UI', size: 9, underline: true, color: { argb: 'FF0284C7' } };
+
+        // Contextual AI Review Hook
+        row.getCell(9).value = r.icebreaker;
+        row.getCell(9).alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+        row.getCell(9).font = { name: 'Segoe UI', size: 9, italic: true, color: { argb: 'FF1E293B' } };
+        row.getCell(9).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+
+        for (let c = 1; c <= 9; c++) {
+          row.getCell(c).border = {
+            top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+            bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+            left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+            right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
+          };
+        }
+        row.height = 36;
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.setAttribute("href", url);
-      link.setAttribute("download", `omega_sample_leads.csv`);
+      link.setAttribute("download", isSample ? 'omega_amostra_leads.xlsx' : `omega_planilha_leads_${Date.now()}.xlsx`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1584,28 +1763,32 @@
 
     function exportToCSV() {
       if (!isPro && currentResults.length > 3) {
-        if (confirm("Free preview exports 3 records. Unlock unlimited extractions and full CSV database for $39 (7-day money-back guarantee)?")) {
+        if (confirm("A prévia gratuita exporta 3 empresas. Deseja desbloquear a base completa de 100+ leads por $39 USD?")) {
           window.open('https://buy.stripe.com/4gM4gy1225Lg6BdaJt8bS05', '_blank');
           return;
         }
       }
 
       const rowsToExport = isPro ? currentResults : currentResults.slice(0, 3);
-      const headers = ["Organization", "Rating", "Reviews", "Phone", "Address", "Website", "Contextual_Hook"];
+      const headers = ["ID", "Categoria", "Empresa", "Reputacao", "Reviews", "Telefone", "Endereco", "Website", "Contextual_Hook"];
+      
       const csvContent = [
-        headers.join(","),
-        ...rowsToExport.map(r => [
-          `"${r.name.replace(/"/g, '""')}"`,
-          r.rating,
-          r.reviews,
-          `"${r.phone}"`,
-          `"${r.address.replace(/"/g, '""')}"`,
-          `"${r.website}"`,
-          `"${r.icebreaker.replace(/"/g, '""')}"`
-        ].join(","))
-      ].join("\n");
+        headers.join(";"),
+        ...rowsToExport.map((r, i) => [
+          `"${String(i + 1).padStart(3, '0')}"`,
+          `"${(r.niche || '').replace(/"/g, '""')}"`,
+          `"${(r.name || '').replace(/"/g, '""')}"`,
+          `"${r.rating}"`,
+          `"${r.reviews}"`,
+          `"${(r.phone || '').replace(/"/g, '""')}"`,
+          `"${(r.address || '').replace(/"/g, '""')}"`,
+          `"${(r.website || '').replace(/"/g, '""')}"`,
+          `"${(r.icebreaker || '').replace(/"/g, '""')}"`
+        ].join(";"))
+      ].join("\r\n");
 
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      // Byte Order Mark (\uFEFF) garante abertura sem corrupção no Excel brasileiro e internacional
+      const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.setAttribute("href", url);
